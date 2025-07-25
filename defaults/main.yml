@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT-0
+---
+# defaults file for vaultwarden_container_setup
+
+vaultwarden_container_setup_name: vaultwarden
+vaultwarden_container_setup_networks:
+  - name: vaultwarden
+
+vaultwarden_container_setup_image: docker.io/vaultwarden/server:latest-alpine
+vaultwarden_container_setup_labels:
+  traefik.enable: "false"
+vaultwarden_container_setup_dir: /srv/vaultwarden
+
+vaultwarden_container_setup_recreate: true
+vaultwarden_container_setup_privileged: false
+
+vaultwarden_container_setup_ports:
+  - "3001:80"
+
+vaultwarden_container_setup_restart_policy: unless-stopped

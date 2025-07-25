@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: MIT-0
+---
+# tasks file for vaultwarden_container_setup
+
+- name: Ensure vaultwarden container volume directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0744'
+    owner: "{{ ansible_user | default(root) }}"
+    group: "{{ ansible_user | default(root) }}"
+  loop:
+    - "{{ vaultwarden_container_setup_dir }}"
+    - "{{ vaultwarden_container_setup_dir }}/vw-data"
+    - "{{ vaultwarden_container_setup_dir }}/log"
+  become: true
+
+- name: Create networks
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+  loop: "{{ vaultwarden_container_setup_networks }}"
+  become: true
+
+- name: Create vaultwarden container
+  community.docker.docker_container:
+    name: "{{ vaultwarden_container_setup_name }}"
+    image: "{{ vaultwarden_container_setup_image }}"
+    state: "{{ vaultwarden_container_setup_state | default('started') }}"
+    network_mode: "{{ vaultwarden_container_setup_network_mode }}"
+    networks: "{{ vaultwarden_container_setup_networks }}"
+    healthcheck: "{{ vaultwarden_container_setup_healthcheck | default(omit) }}"
+    recreate: "{{ vaultwarden_container_setup_recreate }}"
+    privileged: "{{ vaultwarden_container_setup_privileged }}"
+    user: "{{ vaultwarden_container_setup_user_uid_gid | default(omit) }}"
+    ports: "{{ vaultwarden_container_setup_ports }}"
+    volumes:
+      - "{{ vaultwarden_container_setup_dir }}/vw-data/:/data/:rw,Z"
+      - "{{ vaultwarden_container_setup_dir }}/log:/data/log:rw,Z"
+    env: "{{ vaultwarden_container_setup_env | default(omit) }}"
+    labels: "{{ vaultwarden_container_setup_labels }}"
+    restart_policy: "{{ vaultwarden_container_setup_restart_policy }}"
+
+- name: Enable linger for user {{ ansible_user | default('root') }}
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/loginctl
+      - enable-linger
+      - "{{ ansible_user | default('root') }}"
+    creates: "/var/lib/systemd/linger/{{ ansible_user | default('root') }}"
+  become: true
+  when: ansible_virtualization_type != "container"
