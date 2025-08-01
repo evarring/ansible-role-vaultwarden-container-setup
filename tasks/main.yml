@@ -10,7 +10,7 @@
         name: "{{ vaultwardenimage_item }}"
         source: pull
       loop:
-        - "{{ vaultwarden_container_setup_server_image }}"
+        - "{{ vaultwarden_container_setup_image }}"
       loop_control:
         loop_var: vaultwardenimage_item
 
