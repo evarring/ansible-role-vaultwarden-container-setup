@@ -13,6 +13,11 @@
         - "{{ vaultwarden_container_setup_image }}"
       loop_control:
         loop_var: vaultwardenimage_item
+      register: vaultwarden_image_pull_result
+
+    - name: Flush handlers immediately
+      ansible.builtin.meta: flush_handlers
+      when: vaultwarden_image_pull_result.changed # noqa: no-handler
 
 - name: Ensure vaultwarden container is stopped when recreating
   when: vaultwarden_container_setup_recreate
