@@ -1,3 +1,12 @@
 # SPDX-License-Identifier: MIT-0
 ---
 # handlers file for vaultwarden_container_setup
+
+- name: Stop container
+  community.docker.docker_container:
+    name: "{{ vaultwardenname_item }}"
+    state: "stopped"
+  loop:
+    - "{{ vaultwarden_container_setup_name }}"
+  loop_control:
+    loop_var: vaultwardenname_item

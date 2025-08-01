@@ -2,6 +2,30 @@
 ---
 # tasks file for vaultwarden_container_setup
 
+- name: Pull the configured image if they haven't already and stop containers if changed
+  notify: Stop container
+  block:
+    - name: Pull the configured image if hasn't already
+      community.docker.docker_image:
+        name: "{{ vaultwardenimage_item }}"
+        source: pull
+      loop:
+        - "{{ vaultwarden_container_setup_server_image }}"
+      loop_control:
+        loop_var: vaultwardenimage_item
+
+- name: Ensure vaultwarden container is stopped when recreating
+  when: vaultwarden_container_setup_recreate
+  block:
+    - name: Notify the handler
+      ansible.builtin.debug:
+        msg: "Stopping container for recreation"
+      notify: Stop container
+      changed_when: true
+
+    - name: Flush handlers immediately
+      ansible.builtin.meta: flush_handlers
+
 - name: Ensure vaultwarden container volume directories exist
   ansible.builtin.file:
     path: "{{ item }}"

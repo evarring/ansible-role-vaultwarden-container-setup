@@ -11,7 +11,7 @@ vaultwarden_container_setup_labels:
   traefik.enable: "false"
 vaultwarden_container_setup_dir: /srv/vaultwarden
 
-vaultwarden_container_setup_recreate: true
+vaultwarden_container_setup_recreate: false
 vaultwarden_container_setup_privileged: false
 
 vaultwarden_container_setup_ports:
