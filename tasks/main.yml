@@ -52,6 +52,8 @@
     state: "{{ vaultwarden_container_setup_state | default('started') }}"
     network_mode: "{{ vaultwarden_container_setup_network_mode }}"
     networks: "{{ vaultwarden_container_setup_networks }}"
+    cpus: "{{ vaultwarden_container_setup_cpus }}"
+    memory: "{{ vaultwarden_container_setup_memory }}"
     healthcheck: "{{ vaultwarden_container_setup_healthcheck | default(omit) }}"
     recreate: "{{ vaultwarden_container_setup_recreate }}"
     privileged: "{{ vaultwarden_container_setup_privileged }}"

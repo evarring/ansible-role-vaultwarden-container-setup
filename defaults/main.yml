@@ -17,4 +17,7 @@ vaultwarden_container_setup_privileged: false
 vaultwarden_container_setup_ports:
   - "3001:80"
 
+vaultwarden_container_setup_cpus: 0.5
+vaultwarden_container_setup_memory: 256M
+
 vaultwarden_container_setup_restart_policy: unless-stopped
